@@ -7,8 +7,8 @@ import "./soulofEnemyToken.sol";
 contract soulofEnemyFarm{
     string public name = "Soul of Enemy Farm";
     address public owner;
-    soulofEnemy public SoulOf;
-    soulofEnemyToken public SoulToken;
+    soulofEnemy public soulofEnemy;
+    soulofEnemyToken public soulofEnemyToken;
 
     address [] public stakers;
 
@@ -16,16 +16,16 @@ contract soulofEnemyFarm{
     mapping(address => bool ) public hasStaked;
     mapping (address => bool ) public isStaking;
 
-    constructor(SoulOf _soulEnemy , SoulToken _soulenemyToken) public {
-        SoulOf = _soulEnemy;
-        SoulToken = _soulenemyToken;
+    constructor(soulofEnemy _soulofEnemy , soulofEnemyToken _soulofEnemyToken) public {
+        soulofEnemy = _soulofEnemy;
+        soulofEnemyToken = _soulofEnemyToken;
         owner = msg.sender;
     }
 
     function stakeTokens(uint _amount) public {
         require(_amount > 0, "Amount must be greater than 0");
 
-        SoulOf.transferFrom(msg.sender, address(this), _amount);
+        soulofEnemy.transferFrom(msg.sender, address(this), _amount);
         
         stakingBalance[msg.sender] = stakingBalance[msg.sender] + _amount;
 
@@ -42,7 +42,7 @@ contract soulofEnemyFarm{
 
         require(balance > 0, "You have no tokens to unstake");
 
-        SoulOf.transferFrom(address(this), msg.sender, balance);
+        soulofEnemy.transferFrom(address(this), msg.sender, balance);
 
         stakingBalance[msg.sender] = 0;
 
@@ -54,9 +54,9 @@ contract soulofEnemyFarm{
         require(msg.sender == owner, "Only the owner can issue tokens");
         for (uint i = 0; i < stakers.length; i++) {
             address recipient = stakers[i];
-            uint balance = stakingBalance[recipient];
+            uint balance = hasStaked[recipient];
             if(balance > 0) {
-                SoulToken.transfer(recipient, balance);
+                soulofEnemyToken.transfer(recipient, balance);
             }
         }
     }
